@@ -1,3 +1,4 @@
+#caffe and dependencies auto-install on ubuntu, tested on ubuntu 14.04 
 OPENBLAS=1
 SPYDER=1
 NTHREAD=32
