@@ -35,3 +35,9 @@ Please cite Caffe in your publications if it helps your research:
       Title = {Caffe: Convolutional Architecture for Fast Feature Embedding},
       Year = {2014}
     }
+##caffecn1.0说明
+添加自动化安装caffe的相关依赖的脚本
+增加日志提取的工具。
+鸣谢以下开发人员：
+李扬(https://github.com/Coldmooon)
+赵凯(https://github.com/zeakey)
