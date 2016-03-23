@@ -42,4 +42,3 @@ Please cite Caffe in your publications if it helps your research:
 - [李扬(https://github.com/Coldmooon)]
 - [赵凯(https://github.com/zeakey)]
 - [黄泽昊(https://github.com/huangzehao)]
-- 
