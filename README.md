@@ -39,7 +39,5 @@ Please cite Caffe in your publications if it helps your research:
 添加自动化安装caffe的相关依赖的脚本
 增加日志提取的工具。
 鸣谢以下开发人员(排名不分先后)：
-- [李扬(https://github.com/Coldmooon)]
-- [赵凯(https://github.com/zeakey)]
-- [黄泽昊(https://github.com/huangzehao)]
+
 - 
