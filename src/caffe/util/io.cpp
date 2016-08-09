@@ -140,6 +140,87 @@ bool ReadImageToDatum(const string& filename, const int label,
     return false;
   }
 }
+
+// ---------------Michael Xin 
+vector<cv::Mat> ReadHyperImageToCVMatVec(const vector<string>& filename_vec, const int num_img,
+    const int height, const int width, const bool is_color) {
+   
+  vector<cv::Mat> cv_img_vec;
+  
+  cv::Mat cv_img;
+  int cv_read_flag = (is_color ? CV_LOAD_IMAGE_COLOR : CV_LOAD_IMAGE_GRAYSCALE);
+
+  for(int i=0; i<num_img; i++) {
+
+    string file = filename_vec[i];
+    cv::Mat cv_img_origin = cv::imread(file, cv_read_flag);
+     
+    if (!cv_img_origin.data) {
+      LOG(ERROR) << "Could not open or find file " << file;
+      return cv_img_vec;
+    }
+    if (height > 0 && width > 0) {
+      cv::resize(cv_img_origin, cv_img, cv::Size(width, height)); 
+    } else {
+      cv_img = cv_img_origin;
+    }
+    
+    cv::Mat temp_frame = cv_img.clone();
+    cv_img_vec.push_back(temp_frame);
+  } 
+  
+  return cv_img_vec;
+}
+
+
+// ---------------Michael Xin 
+// 注意: 如果 height !=0; width != 0, 则filename_vec长度为1且filename_vec[0]对应的是直接可换datum的文件
+bool ReadHyperImageToDatum(const vector<string>& filename_vec, const int num_img, const int label,
+    const int height, const int width, const bool is_color,
+    const std::string & encoding, Datum* datum) {
+
+  vector<cv::Mat> cv_img_vec = ReadHyperImageToCVMatVec(filename_vec, num_img, height, width, is_color);
+
+  // std::cout << filename_vec[0] <<std::endl;
+  // std::cout << filename_vec[1] <<std::endl;
+
+  /*
+  cv::imshow("rgb", cv_img_vec[0]);
+  cv::imshow("flow", cv_img_vec[1]);
+  cv::waitKey(0);
+  */
+
+  //std::cout<< "row col " << cv_img_vec[0].rows << cv_img_vec[0].cols << std::endl;
+
+  if (encoding.size()) {
+    if (!height && !width && matchExt(filename_vec[0], encoding) )
+      return ReadFileToDatum(filename_vec[0], label, datum);
+    std::vector<uchar> buf;
+    
+    for (int i=0; i<num_img; i++) {    // vector<cv::Mat>::const_iterator iter = cv_img_vec.begin(); iter != cv_img_vec.end(); iter++
+      cv::Mat cv_img = cv_img_vec[i];  // *iter;
+      string filename = filename_vec[i];
+       if (cv_img.data) {
+         std::vector<uchar> buf_temp;
+         cv::imencode("."+encoding, cv_img, buf);
+         buf_temp.insert(buf_temp.begin(), buf.begin(), buf.end());
+         buf = buf_temp;     
+       } else {
+         return false;
+       }
+    }
+    
+    datum->set_data(std::string(reinterpret_cast<char*>(&buf[0]), buf.size()));  // Datum in caffe/proto/caffe.pb.h
+    datum->set_label(label);
+    datum->set_encoded(true);
+    return true;
+  }
+
+  CVMatVecToDatum(cv_img_vec, datum);
+  datum->set_label(label);
+
+  return true;
+}
 #endif  // USE_OPENCV
 
 bool ReadFileToDatum(const string& filename, const int label,
@@ -234,5 +315,52 @@ void CVMatToDatum(const cv::Mat& cv_img, Datum* datum) {
   }
   datum->set_data(buffer);
 }
+
+// -------- Michael Xin
+void CVMatVecToDatum(const vector<cv::Mat>& cv_img_vec, Datum* datum) {
+  
+  // Note: supose all images in one datum have the same numbers of channels
+  
+  int img_n = cv_img_vec.size();              // number of images in one datum
+  int chans = cv_img_vec[0].channels();  // number of channels in one image
+  int chans_totle = 0;                             // number of channels of totle images
+  for (size_t i=0; i<img_n; i++) {
+    CHECK(cv_img_vec[i].depth() == CV_8U) << "Image data type must be unsigned byte";
+    chans_totle += cv_img_vec[i].channels();
+  }
+
+  datum->set_channels(chans_totle);  //  cv_img.channels()
+  datum->set_height(cv_img_vec[0].rows);
+  datum->set_width(cv_img_vec[0].cols);
+  datum->clear_data();
+  datum->clear_float_data();
+  datum->set_encoded(false);
+
+  int datum_channels = datum->channels();
+  int datum_height = datum->height();
+  int datum_width = datum->width();
+  int datum_size = datum_channels * datum_height * datum_width;
+  
+  std::string buffer(datum_size, ' ');
+
+  int num = 0;
+  for (int h = 0; h < datum_height; ++h) {
+    int img_index = 0;     
+    for (int w = 0; w < datum_width; ++w) {
+        for (int img_i = 0; img_i<img_n; ++img_i) {
+          const uchar* ptr = cv_img_vec[img_i].ptr<uchar>(h);
+          for (int c = 0; c < chans; ++c) {
+            int datum_index = ((c * datum_height + h) * datum_width + w) + h*w*c*img_i;
+            uchar data = ptr[img_index++];
+            buffer[datum_index] = static_cast<char>(data); //
+            num++;
+          }
+        }
+    }
+  }
+
+  datum->set_data(buffer); 
+}
+
 #endif  // USE_OPENCV
 }  // namespace caffe

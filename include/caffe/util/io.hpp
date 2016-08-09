@@ -126,6 +126,10 @@ inline bool ReadImageToDatum(const string& filename, const int label,
   return ReadImageToDatum(filename, label, 0, 0, true, encoding, datum);
 }
 
+bool ReadHyperImageToDatum(const vector<string>& filename_vec, const int num_img, const int label,
+    const int height, const int width, const bool is_color,
+    const std::string & encoding, Datum* datum);      // -------Michael Xin
+
 bool DecodeDatumNative(Datum* datum);
 bool DecodeDatum(Datum* datum, bool is_color);
 
@@ -141,10 +145,14 @@ cv::Mat ReadImageToCVMat(const string& filename,
 
 cv::Mat ReadImageToCVMat(const string& filename);
 
+vector<cv::Mat> ReadHyperImageToCVMatVec(const vector<string>& filename_vec, const int num_img,
+    const int height, const int width, const bool is_color);  // Michael Xin
+
 cv::Mat DecodeDatumToCVMatNative(const Datum& datum);
 cv::Mat DecodeDatumToCVMat(const Datum& datum, bool is_color);
 
 void CVMatToDatum(const cv::Mat& cv_img, Datum* datum);
+void CVMatVecToDatum(const vector<cv::Mat>& cv_img_vec, Datum* datum);   // Michael Xin
 #endif  // USE_OPENCV
 
 }  // namespace caffe

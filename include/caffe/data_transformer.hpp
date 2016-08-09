@@ -66,6 +66,19 @@ class DataTransformer {
 
   /**
    * @brief Applies the transformation defined in the data layer's
+   * transform_param block to a vector of Mat.
+   *
+   * @param mat_vector
+   *    A vector of Mat containing the data to be transformed.
+   * @param transformed_blob
+   *    This is destination blob. If axis is set to be 1, Mats will be
+   *    fused according to channels.
+   */
+  void Transform(const vector<cv::Mat> & mat_vector, 
+  	         Blob<Dtype>* transformed_blob, const int axis);  // Michael Xin
+
+  /**
+   * @brief Applies the transformation defined in the data layer's
    * transform_param block to a cv::Mat
    *
    * @param cv_img
