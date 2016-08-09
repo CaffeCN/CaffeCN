@@ -174,7 +174,6 @@ vector<cv::Mat> ReadHyperImageToCVMatVec(const vector<string>& filename_vec, con
 
 
 // ---------------Michael Xin 
-// 注意: 如果 height !=0; width != 0, 则filename_vec长度为1且filename_vec[0]对应的是直接可换datum的文件
 bool ReadHyperImageToDatum(const vector<string>& filename_vec, const int num_img, const int label,
     const int height, const int width, const bool is_color,
     const std::string & encoding, Datum* datum) {
