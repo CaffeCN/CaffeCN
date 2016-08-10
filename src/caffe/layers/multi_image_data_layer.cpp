@@ -138,7 +138,8 @@ void MultiImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
 
   // Reshape according to the first image of each batch
   // on single input batches allows for inputs of varying dimension.
-  vector<cv::Mat> cv_img_vec = ReadHyperImageToCVMatVec(lines_[lines_id_].first, img_num, new_height, new_width, is_color); // root_folder + lines_[lines_id_].first
+  vector<cv::Mat> cv_img_vec = ReadHyperImageToCVMatVec(lines_[lines_id_].first, img_num, 
+                                                         new_height, new_width, is_color);
   for(int i=0; i<img_num; i++)
   	CHECK(cv_img_vec[i].data) << "Could not load " << lines_[lines_id_].first[i];
   // CHECK(cv_img.data) << "Could not load " << lines_[lines_id_].first;
@@ -161,7 +162,8 @@ void MultiImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     // get a blob
     timer.Start();
     CHECK_GT(lines_size, lines_id_);
-    vector<cv::Mat> cv_img_vec = ReadHyperImageToCVMatVec(lines_[lines_id_].first, img_num, new_height, new_width, is_color); // root_folder + lines_[lines_id_].first
+    vector<cv::Mat> cv_img_vec = ReadHyperImageToCVMatVec(lines_[lines_id_].first, img_num, 
+                                                           new_height, new_width, is_color); 
     for(int i=0; i<img_num; i++)
   	  CHECK(cv_img_vec[i].data) << "Could not load " << lines_[lines_id_].first[i];
   	
@@ -170,9 +172,7 @@ void MultiImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     // Apply transformations (mirror, crop...) to the image
     int offset = batch->data_.offset(item_id);
     this->transformed_data_.set_cpu_data(prefetch_data + offset);
-    {
-      this->data_transformer_->Transform(cv_img_vec[0], &(this->transformed_data_)); //
-    }
+    this->data_transformer_->Transform(cv_img_vec, &(this->transformed_data_), 1); //
     trans_time += timer.MicroSeconds();
 
     prefetch_label[item_id] = lines_[lines_id_].second;

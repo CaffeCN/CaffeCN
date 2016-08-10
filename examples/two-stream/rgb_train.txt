@@ -1,0 +1,13 @@
+fake/train_fake_10000.jpg fake/train_fake_10001.jpg 0
+fake/train_fake_10001.jpg fake/train_fake_10002.jpg 0
+fake/train_fake_10003.jpg fake/train_fake_10004.jpg 0
+fake/train_fake_10005.jpg fake/train_fake_10006.jpg 0
+fake/train_fake_10007.jpg fake/train_fake_10008.jpg 0
+fake/train_fake_10009.jpg fake/train_fake_10010.jpg 0
+real/train_real_10000.jpg real/train_real_10001.jpg 1
+real/train_real_10001.jpg real/train_real_10002.jpg 1
+real/train_real_10002.jpg real/train_real_10003.jpg 1
+real/train_real_10003.jpg real/train_real_10004.jpg 1
+real/train_real_10004.jpg real/train_real_10005.jpg 1
+real/train_real_10005.jpg real/train_real_10006.jpg 1
+real/train_real_10006.jpg real/train_real_10007.jpg 1

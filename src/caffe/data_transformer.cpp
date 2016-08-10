@@ -227,7 +227,6 @@ void DataTransformer<Dtype>::Transform(const vector<cv::Mat> & mat_vector,
 template<typename Dtype>
 void DataTransformer<Dtype>::Transform(const vector<cv::Mat> & mat_vector,
                                        Blob<Dtype>* transformed_blob, const int axis) {
-
   CHECK_LT(axis, 3) << "Transform Mat Vecotr can be only performed on axis 0 or 1";
 
   if(axis==0) {
@@ -252,7 +251,7 @@ void DataTransformer<Dtype>::Transform(const vector<cv::Mat> & mat_vector,
   
   
   CHECK_GE(num, 1);
-  CHECK_EQ(channels, img_channels);
+  CHECK_EQ(channels, img_channels * mat_num);
   CHECK_LE(height, img_height);
   CHECK_LE(width, img_width);
   
@@ -291,6 +290,7 @@ void DataTransformer<Dtype>::Transform(const vector<cv::Mat> & mat_vector,
   int w_off = 0;
   vector<cv::Mat> cv_cropped_img_vec;
   if (crop_size) {
+  	// LOG(INFO) << "HERE 0" ;
     CHECK_EQ(crop_size, height);
     CHECK_EQ(crop_size, width);
     // We only do random crop when we do training.
@@ -309,18 +309,24 @@ void DataTransformer<Dtype>::Transform(const vector<cv::Mat> & mat_vector,
         CHECK(cv_cropped_img_vec[i].data);
     }
   } else {
+  	cv_cropped_img_vec = mat_vector;
     CHECK_EQ(img_height, height);
     CHECK_EQ(img_width, width);
   }
   
+  // LOG(INFO) << "height is " << height;
+  
   Dtype* transformed_data = transformed_blob->mutable_cpu_data();
   int top_index;
   for (int h = 0; h < height; ++h) {
-    // const uchar* ptr = cv_cropped_img.ptr<uchar>(h);
+  	// LOG(INFO) << "HERE 1" ;
     int img_index = 0;
     for (int w = 0; w < width; ++w) {
+    	// LOG(INFO) << "HERE 2" ;
       for(int img_i = 0; img_i < mat_num; ++img_i) {
+      	// LOG(INFO) << "HERE 3" ;
         const uchar* ptr = cv_cropped_img_vec[img_i].ptr<uchar>(h);
+        // LOG(INFO) << "HERE 3.1" ;
         for (int c = 0; c < img_channels; ++c) {
           if (do_mirror) {
             // top_index = (c * height + h) * width + (width - 1 - w);
