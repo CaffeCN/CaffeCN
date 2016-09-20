@@ -1,3 +1,10 @@
+# CaffeCN - Caffe Branch of Caffe-China-User-Group
+## Acknowledgement
+  @MichaelXin
+  @shicai 
+  @Coldmooon 
+  @HolidayXue 
+  
 # Caffe
 
 [![Build Status](https://travis-ci.org/BVLC/caffe.svg?branch=master)](https://travis-ci.org/BVLC/caffe)
@@ -13,7 +20,7 @@ Check out the [project site](http://caffe.berkeleyvision.org) for all the detail
 - [BVLC reference models](http://caffe.berkeleyvision.org/model_zoo.html) and the [community model zoo](https://github.com/BVLC/caffe/wiki/Model-Zoo)
 - [Installation instructions](http://caffe.berkeleyvision.org/installation.html)
 
-and step-by-step examples.
+and step-by-step examples.  
 
 [![Join the chat at https://gitter.im/BVLC/caffe](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/BVLC/caffe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
